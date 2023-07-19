@@ -1,6 +1,7 @@
 {
     "name": "dized/repairable-client-php",
     "description": "DiZed Team Repairable API Client for PHP",
+    "version": "1.0.0",
     "keywords": ["dized", "repairable", "api", "client", "php"],
     "type": "library",
     "license": "MIT",
