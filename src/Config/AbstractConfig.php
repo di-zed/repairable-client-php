@@ -13,19 +13,19 @@ use DiZed\RepairableClient\Exception\ConfigException;
 class AbstractConfig
 {
     /**
-     * Public Key parameter.
+     * @var string
      */
-    const PARAM_PUBLIC_KEY = 'public_key';
+    private string $publicKey;
 
     /**
-     * Private Key parameter.
+     * @var string
      */
-    const PARAM_PRIVATE_KEY = 'private_key';
+    private string $privateKey;
 
     /**
      * @var array Configuration parameters.
      */
-    protected array $config = [];
+    private array $config = [];
 
     /**
      * Config constructor.
@@ -75,7 +75,7 @@ class AbstractConfig
      */
     public function getPublicKey(): string
     {
-        return $this->getParam(self::PARAM_PUBLIC_KEY);
+        return $this->publicKey;
     }
 
     /**
@@ -85,7 +85,17 @@ class AbstractConfig
      */
     public function getPrivateKey(): string
     {
-        return $this->getParam(self::PARAM_PRIVATE_KEY);
+        return $this->privateKey;
+    }
+
+    /**
+     * Get Config.
+     *
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
     }
 
     /**
@@ -106,15 +116,15 @@ class AbstractConfig
             throw new ConfigException('The private key cannot be empty.');
         }
 
+        $this->publicKey = $publicKey;
+        $this->privateKey = $privateKey;
+
         foreach ($config as $key => $value) {
             if (is_numeric($key)) {
                 throw new ConfigException(sprintf('Configuration parameter "%s" is not defined.', $key));
             }
             $this->setParam($key, $value);
         }
-
-        $this->setParam(self::PARAM_PUBLIC_KEY, $publicKey);
-        $this->setParam(self::PARAM_PRIVATE_KEY, $privateKey);
 
         return $this;
     }
