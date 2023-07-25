@@ -6,6 +6,7 @@
 namespace DiZed\RepairableClient\Client;
 
 use DiZed\RepairableClient\Config\FormConfig;
+use DiZed\RepairableClient\Response\FormResponse;
 
 /**
  * The Form Client class.
@@ -20,20 +21,40 @@ class FormClient extends AbstractClient
     /**
      * Get form HTML code.
      *
+     * @param array $params
      * @return string
      */
-    public function getFormHtml(): string
+    public function getFormHtml(array $params = []): string
     {
-        $this->sendPost(self::URL_API_GET_FORM);
+        $result = '';
 
-        return '';
+        try {
+            $response = $this->request(self::URL_API_GET_FORM, $params);
+            if ($response->isSuccess()) {
+                $result = $response->getResult();
+            }
+        } catch (\Exception $e) {
+            return '';
+        }
+
+        return $result;
     }
 
     /**
      * @inheritDoc
+     * @return FormConfig
      */
     protected function initConfig(string $publicKey, string $privateKey, array $config = []): FormConfig
     {
         return new FormConfig($publicKey, $privateKey, $config);
+    }
+
+    /**
+     * @inheritDoc
+     * @return FormResponse
+     */
+    protected function initResponse(int $status, string $body, array $headers = [], array $cookies = []): FormResponse
+    {
+        return new FormResponse($status, $body, $headers, $cookies);
     }
 }

@@ -7,6 +7,8 @@ namespace DiZed\RepairableClient\Client;
 
 use DiZed\RepairableClient\Config\AbstractConfig;
 use DiZed\RepairableClient\Client\Http\Curl;
+use DiZed\RepairableClient\Exception\ApiException;
+use DiZed\RepairableClient\Response\AbstractResponse;
 
 /**
  * The main Client class.
@@ -56,12 +58,30 @@ abstract class AbstractClient
         return $this->curl;
     }
 
-    public function sendPost(string $uri, array $params = [])
+    /**
+     * Send POST request.
+     *
+     * @param string $uri
+     * @param array $params
+     * @return AbstractResponse
+     * @throws ApiException
+     */
+    public function request(string $uri, array $params = []): AbstractResponse
     {
-        $this->curl->setCredentials($this->config->getPublicKey(), $this->config->getPrivateKey());
-        $this->curl->sendPost($uri, array_merge($this->config->getConfig(), $params));
+        try {
+            $this->curl->setCredentials($this->config->getPublicKey(), $this->config->getPrivateKey());
+            $this->curl->setHeader('Content-Type', 'application/json');
+            $this->curl->sendPost($uri, array_merge($this->config->getConfig(), $params));
+        } catch (\Exception $e) {
+            throw new ApiException($e->getMessage());
+        }
 
-        return $this->curl->getBody();
+        return $this->initResponse(
+            $this->curl->getStatus(),
+            $this->curl->getBody(),
+            $this->curl->getHeaders(),
+            $this->curl->getCookies(true)
+        );
     }
 
     /**
@@ -73,4 +93,20 @@ abstract class AbstractClient
      * @return AbstractConfig
      */
     abstract protected function initConfig(string $publicKey, string $privateKey, array $config = []): AbstractConfig;
+
+    /**
+     * Response initialization.
+     *
+     * @param int $status
+     * @param string $body
+     * @param array $headers
+     * @param array $cookies
+     * @return AbstractResponse
+     */
+    abstract protected function initResponse(
+        int $status,
+        string $body,
+        array $headers = [],
+        array $cookies = []
+    ): AbstractResponse;
 }
