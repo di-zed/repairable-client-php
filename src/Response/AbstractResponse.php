@@ -87,7 +87,7 @@ class AbstractResponse
         try {
             $body = $this->getBody();
             $data = (is_array($body) ? $body : json_decode($body, true));
-            return array_merge_recursive(self::RESPONSE_REQUIRED_FIELDS, $data);
+            return array_merge(self::RESPONSE_REQUIRED_FIELDS, (array)$data);
         } catch (\Exception $e) {
             throw new ApiException($e->getMessage());
         }
