@@ -31,7 +31,10 @@ class FormClient extends AbstractClient
         try {
             $response = $this->request(self::URL_API_GET_FORM, $params);
             if ($response->isSuccess()) {
-                $result = $response->getResult();
+                $data = $response->getResult();
+                if (!empty($data['form_html']) && is_string($data['form_html'])) {
+                    $result = $data['form_html'];
+                }
             }
         } catch (\Exception $e) {
             return '';
