@@ -44,5 +44,13 @@ $formClient = new FormClient($publicKey, $privateKey, $config);
 $params = [];
 
 echo $formClient->getFormHtml($params);
+```
 
+If you don't have a composer in your project, you can just download the library and start your code on the next line.
+
+```php
+<?php
+require_once '<path_to_library>/repairable-client-php/autoload.php';
+
+// ...
 ```

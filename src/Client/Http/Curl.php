@@ -11,14 +11,14 @@ namespace DiZed\RepairableClient\Client\Http;
 class Curl
 {
     /**
+     * The CURL resource.
+     */
+    protected $curl = null;
+
+    /**
      * @var array
      */
     protected array $cookies = [];
-
-    /**
-     * @var \CurlHandle
-     */
-    protected ?\CurlHandle $curl = null;
 
     /**
      * @var int
@@ -63,7 +63,7 @@ class Curl
     /**
      * @var int|null
      */
-    private $sslVersion;
+    private ?int $sslVersion;
 
     /**
      * Curl constructor.
@@ -84,7 +84,7 @@ class Curl
      * @return $this
      * @throws \Exception
      */
-    public function sendRequest(string $method, string $uri, array $params = []): static
+    public function sendRequest(string $method, string $uri, array $params = []): self
     {
         $this->curl = curl_init();
 
@@ -156,7 +156,7 @@ class Curl
      * @return $this
      * @throws \Exception
      */
-    public function sendGet(string $uri): static
+    public function sendGet(string $uri): self
     {
         return $this->sendRequest('GET', $uri);
     }
@@ -169,7 +169,7 @@ class Curl
      * @return $this
      * @throws \Exception
      */
-    public function sendPost(string $uri, array $params = []): static
+    public function sendPost(string $uri, array $params = []): self
     {
         return $this->sendRequest('POST', $uri, $params);
     }
@@ -180,7 +180,7 @@ class Curl
      * @param int $value
      * @return $this
      */
-    public function setPort(int $value): static
+    public function setPort(int $value): self
     {
         $this->port = $value;
         return $this;
@@ -192,7 +192,7 @@ class Curl
      * @param int $value
      * @return $this
      */
-    public function setTimeout(int $value): static
+    public function setTimeout(int $value): self
     {
         $this->timeout = $value;
         return $this;
@@ -204,7 +204,7 @@ class Curl
      * @param array $headers
      * @return $this
      */
-    public function setHeaders(array $headers): static
+    public function setHeaders(array $headers): self
     {
         $this->headers = $headers;
         return $this;
@@ -217,7 +217,7 @@ class Curl
      * @param string $value
      * @return $this
      */
-    public function setHeader(string $name, string $value): static
+    public function setHeader(string $name, string $value): self
     {
         $this->headers[$name] = $value;
         return $this;
@@ -245,7 +245,7 @@ class Curl
      * @param array $cookies
      * @return $this
      */
-    public function setCookies(array $cookies): static
+    public function setCookies(array $cookies): self
     {
         $this->cookies = $cookies;
         return $this;
@@ -258,7 +258,7 @@ class Curl
      * @param string $value
      * @return $this
      */
-    public function setCookie(string $name, string $value): static
+    public function setCookie(string $name, string $value): self
     {
         $this->cookies[$name] = $value;
         return $this;
@@ -298,7 +298,7 @@ class Curl
      * @param string $password
      * @return $this
      */
-    public function setCredentials(string $login, string $password): static
+    public function setCredentials(string $login, string $password): self
     {
         $val = base64_encode("{$login}:{$password}");
         $this->setHeader("Authorization", "Basic {$val}");
@@ -312,7 +312,7 @@ class Curl
      * @param array $options
      * @return $this
      */
-    public function setOptions(array $options): static
+    public function setOptions(array $options): self
     {
         $this->userOptions = $options;
         return $this;
@@ -325,7 +325,7 @@ class Curl
      * @param mixed $value
      * @return void
      */
-    public function setOption($name, $value): static
+    public function setOption(string $name, $value): self
     {
         $this->userOptions[$name] = $value;
         return $this;
@@ -411,7 +411,7 @@ class Curl
      * @return int
      * @throws \Exception
      */
-    protected function parseHeaders($curl, string $data = null)
+    protected function parseHeaders($curl, string $data = null): int
     {
         $data = ($data !== null ? $data : '');
 
